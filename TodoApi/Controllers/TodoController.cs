@@ -16,7 +16,8 @@ namespace TodoApi.Controllers
 
             if (_context.TodoItems.Count() == 0)
             {
-                _context.TodoItems.Add(new TodoItem { Title = "Item1" });
+                _context.TodoItems.Add(new TodoItem { Title = "Do first thing", Completed = true, UserId = 44 });
+                _context.TodoItems.Add(new TodoItem { Title = "Do the next thing", UserId = 44 });
                 _context.SaveChanges();
             }
         }
@@ -65,11 +66,24 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            todo.Completed = item.Completed;
             todo.Title = item.Title;
-            todo.UserId = item.UserId;
+            todo.Completed = item.Completed;
 
             _context.TodoItems.Update(todo);
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
+        {
+            var todo = _context.TodoItems.Find(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            _context.TodoItems.Remove(todo);
             _context.SaveChanges();
             return NoContent();
         }
